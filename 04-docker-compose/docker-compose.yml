@@ -1,0 +1,43 @@
+services:
+  # -----------------------------------------------
+  # DATABASE — PostgreSQL
+  # -----------------------------------------------
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: tododb
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # persist DB data
+    ports:
+      - "5432:5432"
+
+  # -----------------------------------------------
+  # BACKEND — Node.js / Express API
+  # -----------------------------------------------
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3000"
+    environment:
+      DB_HOST: db                # service name = hostname in docker network
+      DB_PORT: 5432
+      DB_NAME: tododb
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+    depends_on:
+      - db
+
+  # -----------------------------------------------
+  # FRONTEND — Nginx serving static HTML
+  # -----------------------------------------------
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

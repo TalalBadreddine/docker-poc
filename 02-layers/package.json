@@ -1,0 +1,7 @@
+{
+  "name": "layers-demo",
+  "version": "1.0.0",
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}
